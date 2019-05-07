@@ -47,8 +47,13 @@ module.exports = postcss.plugin('postcss-transition', (opts) => (root) => {
     });
   });
 
-  addMediaRule(root, `(max-width: ${$opts.min})`, mediaMin);
-  addMediaRule(root, `(min-width: ${$opts.max})`, mediaMax);
+  if (mediaMin.length) {
+    addMediaRule(root, `(max-width: ${$opts.min})`, mediaMin);
+  }
+
+  if (mediaMax.length) {
+    addMediaRule(root, `(min-width: ${$opts.max})`, mediaMax);
+  }
 });
 
 function addMediaRule(root, params, children) {

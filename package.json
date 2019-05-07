@@ -1,10 +1,11 @@
 {
   "name": "postcss-fluid",
   "description": "Fluid css value",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.bundle.js",
   "author": "Mikhail Novikov <notiv.nt@gmail.com>",
   "scripts": {
+    "prepublish": "npm run test && npm run build",
     "test": "jest test.js",
     "test:dev": "jest --watch test.js",
     "build": "terser index.js -o index.bundle.js"

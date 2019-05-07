@@ -118,3 +118,9 @@ a {
   }
 }
 `)]));
+
+test('Do nothing if function was not found at all', () => Promise.all([run(`
+a { color: red; }
+`, `
+a { color: red; }
+`)]));
