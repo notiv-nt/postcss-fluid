@@ -1,7 +1,7 @@
 {
   "name": "postcss-fluid",
   "description": "Fluid css value",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "main": "index.bundle.js",
   "author": "Mikhail Novikov <notiv.nt@gmail.com>",
   "scripts": {

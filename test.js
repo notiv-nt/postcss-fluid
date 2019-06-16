@@ -24,11 +24,19 @@ test('Resolve basic function', () => {
   `;
 
   const output = `
-    a { }
+    a {
+      padding: calc(10px + 10 * (100vw - 320px) / 880)
+    }
 
-    @media (min-width: 320px) and (max-width: 1200px) {
-     a {
-        padding: calc(10px + 10 * (100vw - 320px) / 880)
+    @media (max-width: 320px) {
+      a {
+        padding: 10px
+      }
+    }
+
+    @media (min-width: 1200px) {
+      a {
+        padding: 20px
       }
     }
   `;
@@ -44,11 +52,19 @@ test('Change min', () => {
   `;
 
   const output = `
-    a { }
+    a {
+      padding: calc(10px + 10 * (100vw - 300px) / 900)
+    }
 
-    @media (min-width: 300px) and (max-width: 1200px) {
+    @media (max-width: 300px) {
       a {
-        padding: calc(10px + 10 * (100vw - 300px) / 900)
+        padding: 10px
+      }
+    }
+
+    @media (min-width: 1200px) {
+      a {
+        padding: 20px
       }
     }
   `;
@@ -64,11 +80,19 @@ test('Change max', () => {
   `;
 
   const output = `
-    a { }
+    a {
+      padding: calc(10px + 10 * (100vw - 320px) / 680)
+    }
 
-    @media (min-width: 320px) and (max-width: 1000px) {
+    @media (max-width: 320px) {
       a {
-        padding: calc(10px + 10 * (100vw - 320px) / 680)
+        padding: 10px
+      }
+    }
+
+    @media (min-width: 1000px) {
+      a {
+        padding: 20px
       }
     }
   `;
@@ -84,11 +108,19 @@ test('Change function name', () => {
   `;
 
   const output = `
-    a { }
+    a {
+      padding: calc(10px + 10 * (100vw - 320px) / 880)
+    }
 
-    @media (min-width: 320px) and (max-width: 1200px) {
+    @media (max-width: 320px) {
       a {
-        padding: calc(10px + 10 * (100vw - 320px) / 880)
+        padding: 10px
+      }
+    }
+
+    @media (min-width: 1200px) {
+      a {
+        padding: 20px
       }
     }
   `;
@@ -104,12 +136,16 @@ test('Resolve only exact function', () => {
   `;
 
   const output = `
-    a { }
+    a {
+      padding: 1rem calc(10px + 10 * (100vw - 320px) / 880) 2rem
+    }
 
-    @media (min-width: 320px) and (max-width: 1200px) {
-      a {
-        padding: 1rem calc(10px + 10 * (100vw - 320px) / 880) 2rem
-      }
+    @media (max-width: 320px) {
+      a { padding: 1rem 10px 2rem }
+    }
+
+    @media (min-width: 1200px) {
+      a { padding: 1rem 20px 2rem }
     }
   `;
 
@@ -131,19 +167,34 @@ test('Compact media', () => {
 
   const output = `
     a {
+      padding: 1rem calc(10px + 10 * (100vw - 320px) / 880) 2rem;
+      font-size: calc(16px + 14 * (100vw - 320px) / 880);
       color: red;
     }
 
-    body { }
+    body {
+      padding: calc(10px + 10 * (100vw - 320px) / 880) 1rem;
+    }
 
-    @media (min-width: 320px) and (max-width: 1200px) {
+    @media (max-width: 320px) {
       a {
-        padding: 1rem calc(10px + 10 * (100vw - 320px) / 880) 2rem;
-        font-size: calc(16px + 14 * (100vw - 320px) / 880);
+        padding: 1rem 10px 2rem;
+        font-size: 16px;
       }
 
       body {
-        padding: calc(10px + 10 * (100vw - 320px) / 880) 1rem;
+        padding: 10px 1rem;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      a {
+        padding: 1rem 20px 2rem;
+        font-size: 30px;
+      }
+
+      body {
+        padding: 20px 1rem;
       }
     }
   `;
