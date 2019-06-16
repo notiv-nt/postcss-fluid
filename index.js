@@ -13,9 +13,7 @@ module.exports = postcss.plugin('postcss-transition', (opts) => (root) => {
     opts
   );
   const regex = new RegExp(`${$opts.functionName}\\(([^)]+)\\)`, 'gi');
-
-  const mediaMin = [];
-  const mediaMax = [];
+  const medias = [];
 
   root.walkDecls((decl) => {
     if (decl.value.indexOf(`${$opts.functionName}(`) === -1) {
@@ -25,38 +23,29 @@ module.exports = postcss.plugin('postcss-transition', (opts) => (root) => {
     let min = decl.value.replace(regex, (_, values) => values.split(',').map((a) => a.trim())[0]);
     let max = decl.value.replace(regex, (_, values) => values.split(',').map((a) => a.trim())[1]);
 
-    decl.value = decl.value.replace(regex, (_, values /*, index*/) => {
+    const value = decl.value.replace(regex, (_, values) => {
       const { minVal, maxVal } = parseValues(values);
 
-      // TODO: Rem
-      // return `calc(${minValue} + ${maxValueInt} * (1px + ((100vw - ${$opts.min}) / (${p($opts.max)} - ${p($opts.min)})) - 1px))`;
-      // Px
       return `calc(${minVal} + ${pf(maxVal) - pf(minVal)} * (100vw - ${$opts.min}) / ${pi($opts.max) - pi($opts.min)})`;
+      // TODO: Rem
+      // `calc(${minValue} + ${maxValueInt} * (1px + ((100vw - ${$opts.min}) / (${p($opts.max)} - ${p($opts.min)})) - 1px))`
     });
 
-    mediaMin.push({
+    medias.push({
       selector: decl.parent.selector,
       prop: decl.prop,
-      value: min,
+      value,
     });
 
-    mediaMax.push({
-      selector: decl.parent.selector,
-      prop: decl.prop,
-      value: max,
-    });
+    decl.remove();
   });
 
-  if (mediaMin.length) {
-    addMediaRule(root, `(max-width: ${$opts.min})`, mediaMin);
-  }
-
-  if (mediaMax.length) {
-    addMediaRule(root, `(min-width: ${$opts.max})`, mediaMax);
+  if (medias.length) {
+    addMediaRules(root, `(min-width: ${$opts.min}) and (max-width: ${$opts.max})`, medias);
   }
 });
 
-function addMediaRule(root, params, children) {
+function addMediaRules(root, params, children) {
   const m = postcss.atRule({ name: 'media', params });
 
   let selectors = {};
