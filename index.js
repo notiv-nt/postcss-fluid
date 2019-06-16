@@ -13,7 +13,9 @@ module.exports = postcss.plugin('postcss-transition', (opts) => (root) => {
     opts
   );
   const regex = new RegExp(`${$opts.functionName}\\(([^)]+)\\)`, 'gi');
-  const medias = [];
+
+  const mediaMin = [];
+  const mediaMax = [];
 
   root.walkDecls((decl) => {
     if (decl.value.indexOf(`${$opts.functionName}(`) === -1) {
@@ -23,29 +25,38 @@ module.exports = postcss.plugin('postcss-transition', (opts) => (root) => {
     let min = decl.value.replace(regex, (_, values) => values.split(',').map((a) => a.trim())[0]);
     let max = decl.value.replace(regex, (_, values) => values.split(',').map((a) => a.trim())[1]);
 
-    const value = decl.value.replace(regex, (_, values) => {
+    decl.value = decl.value.replace(regex, (_, values /*, index*/) => {
       const { minVal, maxVal } = parseValues(values);
 
-      return `calc(${minVal} + ${pf(maxVal) - pf(minVal)} * (100vw - ${$opts.min}) / ${pi($opts.max) - pi($opts.min)})`;
       // TODO: Rem
-      // `calc(${minValue} + ${maxValueInt} * (1px + ((100vw - ${$opts.min}) / (${p($opts.max)} - ${p($opts.min)})) - 1px))`
+      // return `calc(${minValue} + ${maxValueInt} * (1px + ((100vw - ${$opts.min}) / (${p($opts.max)} - ${p($opts.min)})) - 1px))`;
+      // Px
+      return `calc(${minVal} + ${pf(maxVal) - pf(minVal)} * (100vw - ${$opts.min}) / ${pi($opts.max) - pi($opts.min)})`;
     });
 
-    medias.push({
+    mediaMin.push({
       selector: decl.parent.selector,
       prop: decl.prop,
-      value,
+      value: min,
     });
 
-    decl.remove();
+    mediaMax.push({
+      selector: decl.parent.selector,
+      prop: decl.prop,
+      value: max,
+    });
   });
 
-  if (medias.length) {
-    addMediaRules(root, `(min-width: ${$opts.min}) and (max-width: ${$opts.max})`, medias);
+  if (mediaMin.length) {
+    addMediaRule(root, `(max-width: ${$opts.min})`, mediaMin);
+  }
+
+  if (mediaMax.length) {
+    addMediaRule(root, `(min-width: ${$opts.max})`, mediaMax);
   }
 });
 
-function addMediaRules(root, params, children) {
+function addMediaRule(root, params, children) {
   const m = postcss.atRule({ name: 'media', params });
 
   let selectors = {};
