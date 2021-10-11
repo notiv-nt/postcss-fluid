@@ -1,5 +1,5 @@
 const postcss = require('postcss');
-const plugin = require('./index');
+const plugin = require('../index');
 
 function run(input, output, opts) {
   return postcss([plugin(opts)])

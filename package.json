@@ -5,9 +5,8 @@
   "main": "index.bundle.js",
   "author": "Mikhail Novikov <notiv.nt@gmail.com>",
   "scripts": {
-    "prepublishOnly": "npm run test && npm run build",
-    "test": "jest test.js",
-    "test:dev": "jest --watch test.js",
+    "test": "jest",
+    "test:dev": "jest --watch",
     "build": "terser index.js -o index.bundle.js"
   },
   "repository": "https://github.com/notiv-nt/postcss-fluid.git",
